@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Özcan'ın ana sayfası</title>
+<meta name="description" content="Araçlarım, saat, hava durumu ve piyasalar tek sayfada.">
+<meta name="theme-color" content="#174e9c">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23174e9c'/%3E%3Ccircle cx='32' cy='29' r='12' fill='%23ffd98a'/%3E%3Cpath d='M0 40h64v9a15 15 0 0 1-15 15H15A15 15 0 0 1 0 49z' fill='%23081a33'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Her aile ayrı istekte: biri yüklenemezse diğerleri etkilenmez -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&display=swap">
+<!-- Projeler aynı kökte (ozcan-py.github.io) olduğu için fareyle üzerine gelince arka planda hazırlanır, tıklayınca anında açılır -->
+<script type="speculationrules">{"prerender":[{"where":{"href_matches":"https://ozcan-py.github.io/*"},"eagerness":"moderate"}]}</script>
+<style>
+:root{
+  --serif:"Bodoni Moda","Bodoni 72","Didot","Bodoni MT","Playfair Display",Georgia,serif;
+  --sans:"Instrument Sans","Avenir Next","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;
+  --hand:"Playwrite DE Grund","Segoe Script","Bradley Hand","Snell Roundhand",cursive;
+  --ink:#f2f6fc;
+  --ink-2:color-mix(in oklab,var(--ink) 74%,transparent);
+  --ink-3:color-mix(in oklab,var(--ink) 54%,transparent);
+  --line:color-mix(in oklab,var(--ink) 14%,transparent);
+  --up:#46dba3; --down:#ff7c72; --warn:#ffc266;
+  /* Aşağıdakileri JS, güneşin gerçek konumuna göre her an yeniden yazar */
+  --sky-top:#174e9c; --sky-mid:#3d7dcc; --sky-hor:#a8cdec;
+  --sun:#fff3cc; --lum:#fff3cc; --lum-x:50%; --lum-y:120px;
+  --deep:#07111f; --sea:#1d4a78; --sil:#0c1a33; --sil-mid:#223a5e; --sil-far:#4a6e9e; --cloud:#f4f8ff;
+  --night:0; --glow:0; --glitter:.4; --sun-s:1;
+  --sun-x:50%; --sun-y:120px; --moon-x:70%; --moon-y:90px; --moon-o:0;
+  --water-h:clamp(54px,7vw,96px);
+  --skyline-h:max(15vw,170px);
+  --pad:clamp(20px,4.2vw,64px);
+}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{min-height:100svh;background:var(--deep);color:var(--ink);font:400 16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:clip}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-shadow:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--lum);outline-offset:3px;border-radius:8px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+kbd{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:7px;font:600 .78rem var(--sans);border:1px solid rgb(255 255 255/.34);border-bottom-width:2px;background:rgb(255 255 255/.1);text-shadow:none}
+svg.ico{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ─── Gökyüzü ─────────────────────────────────────────── */
+.sky{position:relative;isolation:isolate;overflow:clip;min-height:min(58svh,720px);
+  padding-bottom:calc(var(--water-h) + var(--skyline-h)*.56);
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 58%,var(--sky-hor) 92%);
+  text-shadow:0 1px 2px rgb(4 16 44/.38),0 0 24px rgb(4 16 44/.3)}
+#stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.glow{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:var(--glow);
+  background:radial-gradient(58% 72% at var(--sun-x) 94%,color-mix(in oklab,var(--sun) 72%,transparent),transparent 72%)}
+.orb{position:absolute;translate:-50% -50%;border-radius:50%;pointer-events:none;z-index:1}
+.sun{left:var(--sun-x);top:var(--sun-y);width:calc(clamp(40px,4.6vw,70px)*var(--sun-s));aspect-ratio:1;
+  background:radial-gradient(circle,#fff 0 30%,var(--sun) 58%,transparent 70%);
+  box-shadow:0 0 50px 14px color-mix(in oklab,var(--sun) 60%,transparent),0 0 180px 70px color-mix(in oklab,var(--sun) 26%,transparent)}
+.moon{left:var(--moon-x);top:var(--moon-y);width:clamp(32px,3.4vw,52px);aspect-ratio:1;opacity:var(--moon-o);filter:drop-shadow(0 0 16px rgb(214 228 255/.6))}
+.moon svg{display:block;width:100%;height:100%;overflow:visible}
+.tag{position:absolute;z-index:5;left:var(--lum-x);top:calc(var(--lum-y) + 46px);translate:-50% 0;padding:3px 11px;border-radius:999px;
+  background:rgb(6 14 32/.6);font-size:.8rem;font-weight:600;text-shadow:none;white-space:nowrap}
+.clouds{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:clip}
+.cloud{position:absolute;left:0;top:var(--y);width:var(--w);aspect-ratio:3/1;opacity:var(--o,0);color:var(--cloud);filter:blur(var(--b,7px));
+  animation:drift var(--d) linear infinite;animation-delay:var(--dl);transition:opacity 1.6s}
+.cloud svg{display:block;width:100%;height:100%;fill:currentColor}
+@keyframes drift{from{translate:-42vw 0}to{translate:112vw 0}}
+.skyline{position:absolute;left:0;bottom:var(--water-h);width:100%;height:var(--skyline-h);z-index:3;display:block;pointer-events:none}
+.skyline .far{fill:var(--sil-far)} .skyline .city{fill:var(--sil-mid)} .skyline .land{fill:var(--sil)}
+.skyline .win{fill:#ffd58a;opacity:calc(var(--night)*.92)}
+.skyline .br{fill:none;stroke:var(--sil);stroke-linecap:round}
+.skyline .led{fill:none;stroke-width:2.6;stroke-linecap:round;opacity:calc(var(--night)*.95);stroke:hsl(var(--hue,200) 95% 66%);filter:drop-shadow(0 0 5px hsl(var(--hue,200) 95% 60%));animation:led 28s linear infinite}
+@property --hue{syntax:'<number>';inherits:true;initial-value:200}
+@keyframes led{from{--hue:0}to{--hue:360}}
+.water{position:absolute;inset:auto 0 0 0;height:var(--water-h);z-index:4;pointer-events:none;
+  background:linear-gradient(180deg,var(--sea) 0%,var(--deep) 100%)}
+.water::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgb(255 255 255/.085) 0 1px,transparent 1px 6px);
+  -webkit-mask:linear-gradient(180deg,#000,transparent 78%);mask:linear-gradient(180deg,#000,transparent 78%)}
+.glitter{position:absolute;left:var(--lum-x);top:0;bottom:0;width:clamp(56px,9vw,150px);translate:-50% 0;opacity:var(--glitter);filter:blur(7px);
+  background:linear-gradient(180deg,color-mix(in oklab,var(--lum) 70%,transparent),transparent 88%)}
+.kule{position:absolute;left:39%;bottom:56%;width:clamp(30px,3.1vw,54px);fill:var(--sil);overflow:visible}
+.vapur{position:absolute;left:0;bottom:26%;width:clamp(62px,6.2vw,108px);fill:var(--sil);overflow:visible;animation:sail 190s linear infinite;animation-delay:-52s}
+.vapur g{animation:bob 4.6s ease-in-out infinite alternate}
+.lit{fill:#ffdc98;opacity:calc(var(--night)*.95)}
+@keyframes sail{from{translate:-14vw 0}to{translate:114vw 0}}
+@keyframes bob{from{translate:0 -1px}to{translate:0 1.4px}}
+
+/* ─── Gökyüzünün üstündeki arayüz ─────────────────────── */
+.ui{position:relative;z-index:6}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px var(--pad) 0}
+.status{display:inline-flex;align-items:center;gap:9px;font-size:.84rem;font-weight:500}
+.status i{width:8px;height:8px;border-radius:50%;background:var(--ink-3)}
+.status[data-s=live] i{background:var(--up);box-shadow:0 0 0 4px color-mix(in oklab,var(--up) 28%,transparent)}
+.status[data-s=partial] i,.status[data-s=preview] i{background:var(--warn);box-shadow:0 0 0 4px color-mix(in oklab,var(--warn) 28%,transparent)}
+.find{display:inline-flex;align-items:center;gap:12px;padding:8px 9px 8px 16px;border-radius:999px;font-size:.92rem;font-weight:500;
+  background:rgb(255 255 255/.13);border:1px solid rgb(255 255 255/.3);transition:background .2s}
+.find:hover{background:rgb(255 255 255/.22)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,430px);gap:clamp(24px,4vw,72px);align-items:start;padding:clamp(12px,3svh,40px) var(--pad) 0}
+.greet{font:italic 400 clamp(1.3rem,2.1vw,1.95rem)/1.2 var(--serif)}
+.clock{display:flex;align-items:flex-start;margin:.06em 0 .1em -.04em;font:500 clamp(5rem,12.4vw,11.5rem)/.9 var(--serif);letter-spacing:-.01em;font-variant-numeric:lining-nums tabular-nums}
+.clock .d{display:inline-block;width:.6em;text-align:center}
+.clock .c{display:inline-block;width:.27em;text-align:center;translate:0 -.07em}
+.clock .s{font:500 .19em/1 var(--sans);letter-spacing:0;margin:.5em 0 0 .5em;opacity:.85;font-variant-numeric:tabular-nums}
+.date{font-size:clamp(1rem,1.25vw,1.15rem);font-weight:500}
+.wx{justify-self:end;width:100%}
+.city{display:inline-flex;align-items:center;gap:7px;padding:4px 10px 4px 0;font-weight:600;font-size:1rem;border-radius:8px}
+.city svg{width:11px;height:11px;fill:currentColor;opacity:.8}
+.wx-main{display:flex;align-items:center;gap:14px;margin-top:2px}
+.wx-main svg{width:clamp(44px,4.4vw,60px);height:auto;aspect-ratio:1;stroke-width:1.35}
+.wx-t{font:500 clamp(3.4rem,6vw,5.4rem)/1 var(--serif);font-variant-numeric:lining-nums;letter-spacing:-.02em}
+.wx-desc{margin-top:8px;font-size:1.08rem;font-weight:600}
+.wx-meta{margin-top:3px;font-size:.92rem;line-height:1.45;max-width:46ch}
+.hours{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:2px;margin-top:14px;padding:8px 0 0;border-top:1px solid rgb(255 255 255/.28)}
+.hours button{width:100%;display:grid;justify-items:center;gap:2px;padding:7px 2px 5px;border-radius:12px;font-size:.8rem;font-variant-numeric:tabular-nums;transition:background .2s}
+.hours button:is(:hover,:focus-visible,.on){background:rgb(255 255 255/.17)}
+.hours svg{width:22px;height:22px} .hours b{font-size:.98rem;font-weight:600} .hours em{font-style:normal;font-size:.68rem;min-height:1.1em;opacity:.9}
+.days{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;font-size:.84rem;font-variant-numeric:tabular-nums}
+.days li{display:flex;align-items:center;justify-content:center;gap:6px;padding:4px 2px;white-space:nowrap}
+.days svg{width:18px;height:18px;flex:none} .days b{font-weight:600} .days span{opacity:.78}
+
+/* ─── Üç araç: suyun üstünde üç kâğıt ─────────────────── */
+.wrap{max-width:1340px;margin-inline:auto;padding-inline:var(--pad)}
+.sheets{position:relative;z-index:7;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,30px);margin-top:calc(var(--water-h)*-.44)}
+.sheet{--tilt:0deg;position:relative;display:flex;flex-direction:column;min-height:clamp(252px,23vw,312px);border-radius:22px;overflow:clip;
+  color:#15202f;text-decoration:none;rotate:var(--tilt);
+  box-shadow:0 1px 0 rgb(255 255 255/.75) inset,0 2px 4px rgb(0 0 0/.32),0 28px 54px -24px rgb(0 0 0/.8);
+  transition:rotate .45s cubic-bezier(.2,.9,.25,1),translate .45s cubic-bezier(.2,.9,.25,1),box-shadow .45s}
+.sheet:is(:hover,:focus-visible){rotate:0deg;translate:0 -8px;box-shadow:0 1px 0 rgb(255 255 255/.75) inset,0 3px 6px rgb(0 0 0/.3),0 44px 70px -26px rgb(0 0 0/.9)}
+.sheet:focus-visible{outline-offset:5px;border-radius:22px}
+.sheet-art{flex:1;position:relative;min-height:150px;display:grid;place-items:center;padding:24px 26px 8px}
+.sheet-txt{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:5px 16px;padding:6px 26px 24px}
+.sheet h2{font:500 clamp(1.75rem,2.5vw,2.35rem)/1.05 var(--serif);letter-spacing:-.01em}
+.sheet p{grid-column:1;font-size:.95rem;line-height:1.42;color:rgb(21 32 47/.74);max-width:36ch}
+.key{grid-column:2;grid-row:1/3;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;font:600 1rem var(--sans);
+  border:1px solid rgb(21 32 47/.3);border-bottom-width:3px;background:rgb(255 255 255/.6)}
+.s-pace{--tilt:-1.1deg;background:#f1e8d6 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .27 0 0 0 0 .16 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.s-mecal{--tilt:.7deg;background:#edf1f7}
+.s-yazi{--tilt:-.5deg;background:#fffefa}
+.rsvp{position:relative;display:grid;grid-template-columns:1fr auto 1fr;width:100%;padding:20px 0;font:500 clamp(2rem,3.3vw,3rem)/1.1 var(--serif);
+  border-block:1.5px solid rgb(21 32 47/.82)}
+.rsvp::before,.rsvp::after{content:"";position:absolute;left:50%;width:1.5px;height:9px;background:rgb(21 32 47/.82)}
+.rsvp::before{top:0}.rsvp::after{bottom:0}
+.rl{text-align:right}.rp{color:#cf3a26}
+.wpm{position:absolute;left:26px;bottom:2px;font-size:.8rem;font-weight:600;color:rgb(21 32 47/.6);font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:clamp(14px,2vw,30px);width:100%}
+.cal-day{display:grid;line-height:1.15}
+.cal-day b{font:500 clamp(3.4rem,5vw,4.6rem)/.9 var(--serif);font-variant-numeric:lining-nums;color:#2457e6}
+.cal-day span{font-size:.95rem;font-weight:600}.cal-day span+span{font-weight:400;color:rgb(21 32 47/.66)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px 0;text-align:center;font-size:.74rem;line-height:1.75;font-variant-numeric:tabular-nums}
+.cal-grid span{border-radius:999px}.cal-grid .h{font-weight:600;color:rgb(21 32 47/.55)}.cal-grid .w{color:rgb(21 32 47/.45)}
+.cal-grid .t{background:#2457e6;color:#fff;font-weight:700}
+.hw{width:100%;height:auto;max-height:150px;overflow:visible}
+.hw line{stroke:#3d72d9;stroke-width:1}.hw .mid{stroke-dasharray:5 4;opacity:.75}.hw .base{stroke-width:1.7}.hw .thin{opacity:.55}
+.hw text{font-family:var(--hand);font-size:44px;font-weight:300}
+.hw-a{fill:#6b7280}
+.hw-b{fill:transparent;stroke:#6b7280;stroke-width:.9}
+.hw-c{fill:none;stroke:#8d939e;stroke-width:1.25;stroke-dasharray:.1 3.1;stroke-linecap:round}
+.s-yazi:is(:hover,:focus-visible) .hw-b{stroke:#1d3fb0;stroke-width:1.2;stroke-dasharray:460;animation:trace 2s ease forwards}
+@keyframes trace{0%{stroke-dashoffset:460;fill:transparent}78%{stroke-dashoffset:0;fill:transparent}100%{stroke-dashoffset:0;fill:#1d3fb0}}
+.hint{margin-top:18px;font-size:.86rem;color:var(--ink-3);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.hint kbd{border-color:var(--line);background:color-mix(in oklab,var(--ink) 6%,transparent);color:var(--ink-2)}
+@media (hover:none){.hint{display:none}}
+
+/* ─── Piyasalar ───────────────────────────────────────── */
+.mk{margin-top:clamp(40px,5.6vw,80px)}
+.mk-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 32px;margin-bottom:20px}
+.mk-head h2{font:italic 400 clamp(1.5rem,2.5vw,2.15rem)/1.18 var(--serif);text-wrap:balance}
+.sessions{display:flex;flex-wrap:wrap;gap:4px 24px;font-size:.9rem;color:var(--ink-2)}
+.sessions b{font-weight:600;color:var(--ink)}
+.sessions i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:8px;background:var(--ink-3);translate:0 -1px}
+.sessions .on i{background:var(--up)}
+.notice{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;margin-bottom:14px;border-radius:12px;font-size:.92rem;line-height:1.45;
+  background:color-mix(in oklab,var(--warn) 11%,transparent);border:1px solid color-mix(in oklab,var(--warn) 42%,transparent)}
+.notice i{flex:none;width:8px;height:8px;margin-top:.5em;border-radius:50%;background:var(--warn)}
+.tiles{display:grid;grid-template-columns:minmax(0,1.55fr) repeat(3,minmax(0,1fr));grid-auto-rows:minmax(136px,auto);gap:12px}
+.tile{position:relative;overflow:clip;display:flex;flex-direction:column;gap:3px;padding:16px 18px 15px;border-radius:14px;
+  border:1px solid var(--line);background:color-mix(in oklab,var(--ink) 4.5%,transparent)}
+.tile--bist{grid-row:span 2;padding:24px 26px 22px;
+  background:linear-gradient(158deg,color-mix(in oklab,var(--sea) 52%,transparent),color-mix(in oklab,var(--ink) 4%,transparent) 72%)}
+.t-name{font-size:.9rem;font-weight:600}.t-name small{font-size:inherit;font-weight:400;color:var(--ink-3);margin-left:7px}
+.t-val{margin-top:auto;font:600 clamp(1.4rem,2vw,1.85rem)/1.15 var(--sans);font-variant-numeric:tabular-nums lining-nums;transition:color .7s}
+.t-val.up{color:var(--up);transition:none}.t-val.down{color:var(--down);transition:none}
+.tile--bist .t-name{font-size:1.02rem}
+.tile--bist .t-val{margin-top:clamp(10px,2vw,26px);font:500 clamp(2.7rem,4.7vw,4.3rem)/1 var(--serif);letter-spacing:-.015em}
+.t-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
+.chg{display:inline-flex;align-items:center;gap:5px;font-size:.92rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2)}
+.chg[data-d=up]{color:var(--up)}.chg[data-d=down]{color:var(--down)}
+.chg svg{width:9px;height:9px;fill:currentColor}.chg[data-d=down] svg{rotate:180deg}.chg[data-d=flat] svg{display:none}
+.tile--bist .chg{font-size:1.12rem}.tile--bist .chg svg{width:11px;height:11px}
+.t-more{font-size:.8rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.spark{position:absolute;top:14px;right:16px;width:40%;height:34px;overflow:visible;pointer-events:none}
+.spark .sl{fill:none;stroke-width:1.6;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round}
+.spark .sa{opacity:.16;stroke:none}
+.spark[data-d=up] .sl{stroke:var(--up)}.spark[data-d=up] .sa{fill:var(--up)}
+.spark[data-d=down] .sl{stroke:var(--down)}.spark[data-d=down] .sa{fill:var(--down)}
+.track{position:relative;height:6px;margin-top:auto;border-radius:3px;background:color-mix(in oklab,var(--ink) 15%,transparent)}
+.track i{position:absolute;inset:0 auto 0 0;width:calc(var(--p,0)*100%);border-radius:3px;background:var(--lum)}
+.track b{position:absolute;left:calc(var(--p,0)*100%);top:50%;width:14px;height:14px;translate:-50% -50%;border-radius:50%;background:#fff;
+  box-shadow:0 0 0 4px color-mix(in oklab,var(--lum) 38%,transparent)}
+.track[data-open=false] b,.track[data-open=false] i{display:none}
+.track-lab{display:flex;justify-content:space-between;margin-top:9px;font-size:.8rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.tape{margin-top:12px;min-height:46px;border-radius:14px;overflow:clip;border:1px solid var(--line)}
+.tape .tradingview-widget-copyright{display:none}
+.foot{padding:34px 0 46px;font-size:.84rem;line-height:1.6;color:var(--ink-3);max-width:92ch}
+.foot a{color:var(--ink-2);text-underline-offset:3px}
+
+/* ─── Arama ve komut penceresi ────────────────────────── */
+dialog{border:0;padding:0;background:transparent;color:var(--ink);width:100%;max-width:min(640px,calc(100vw - 28px));margin:11vh auto auto;overflow:visible}
+dialog::backdrop{background:rgb(3 8 18/.62);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+dialog[open]{opacity:1;translate:0 0;transition:opacity .18s,translate .18s,overlay .18s allow-discrete,display .18s allow-discrete}
+@starting-style{dialog[open]{opacity:0;translate:0 -12px}}
+.cmd{border-radius:18px;overflow:clip;background:color-mix(in oklab,var(--deep) 84%,#fff);border:1px solid color-mix(in oklab,var(--ink) 20%,transparent);box-shadow:0 40px 90px -20px #000}
+#q{width:100%;padding:20px 22px;font:500 1.15rem var(--sans);color:inherit;background:transparent;border:0;border-bottom:1px solid var(--line);outline:0}
+#q::placeholder{color:var(--ink-3)}
+#list{list-style:none;padding:8px;max-height:min(54vh,430px);overflow:auto}
+#list li{display:flex;align-items:baseline;justify-content:space-between;gap:18px;padding:11px 14px;border-radius:10px;cursor:pointer}
+#list li[aria-selected=true]{background:color-mix(in oklab,var(--ink) 11%,transparent)}
+#list small{font-size:.84rem;color:var(--ink-3);white-space:nowrap}
+.cmd-foot{display:flex;flex-wrap:wrap;gap:6px 18px;padding:11px 22px 13px;border-top:1px solid var(--line);font-size:.8rem;color:var(--ink-3)}
+.cmd-foot kbd{border-color:var(--line);background:transparent;height:20px;min-width:20px;font-size:.72rem;margin-right:4px}
+
+/* ─── Duyarlı yerleşim ────────────────────────────────── */
+@media (max-width:1040px){
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tile--bist{grid-column:1/-1;grid-row:auto;min-height:230px}
+}
+@media (max-width:900px){
+  .sheets{grid-template-columns:1fr}
+  .sheet{flex-direction:row;min-height:188px;--tilt:0deg}
+  .sheet-art{order:2;flex:1.15;min-height:0;padding:20px 24px 20px 8px}
+  .sheet-txt{flex:1;align-content:end;padding:22px 8px 22px 24px}
+  .wpm{left:8px}
+}
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;gap:22px}
+  .find span{display:none}.find{padding:8px 9px}
+  .sky{padding-bottom:calc(var(--water-h) + var(--skyline-h)*.74)}
+}
+@media (max-width:560px){
+  .sheet{flex-direction:column}
+  .sheet-art{order:0;min-height:150px;padding:22px 22px 6px}
+  .sheet-txt{padding:6px 22px 22px}
+  .wpm{left:22px}
+  .tiles{gap:10px}.tile{padding:14px 14px 13px}
+  .spark{display:none}
+  .hours{grid-auto-columns:minmax(46px,1fr);overflow-x:auto;scrollbar-width:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .cloud,.vapur,.vapur g,.skyline .led{animation:none}
+  .cloud{translate:var(--rx,20vw) 0}.vapur{translate:62vw 0}
+}
+</style>
+</head>
+<body>
+<h1 class="vh">Özcan'ın ana sayfası</h1>
+
+<header class="sky" id="sky">
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="orb sun" aria-hidden="true"></div>
+  <div class="orb moon" aria-hidden="true"><svg viewBox="-50 -50 100 100"><circle r="48" fill="rgb(255 255 255/.08)"/><path id="moonLit" fill="#eef2ff"/></svg></div>
+  <span class="tag" id="tag" hidden></span>
+  <div class="clouds" id="clouds" aria-hidden="true"></div>
+  <svg class="skyline" id="skyline" viewBox="0 0 1600 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true"></svg>
+  <div class="water" aria-hidden="true">
+    <div class="glitter"></div>
+    <svg class="kule" viewBox="0 0 64 72"><path d="M0 72q32-15 64 0zM9 52h46v15H9zM13 44h21v9H13zM36 22h14v31H36zM34 30h18v3H34zM36 22a7 6 0 0 1 14 0zM40 16h6v6h-6zM42.4 3h1.2v14h-1.2z"/><circle class="lit" cx="43" cy="19" r="2.2"/></svg>
+    <svg class="vapur" viewBox="0 0 120 44"><g><path d="M3 28h114l-9 11H12zM14 18h90v10H14zM30 9h52v9H30zM54 9l2-9h10l2 9zM108 18V7h1.4v11z"/><path class="lit" d="M20 21h5v4h-5zM30 21h5v4h-5zM40 21h5v4h-5zM50 21h5v4h-5zM60 21h5v4h-5zM70 21h5v4h-5zM80 21h5v4h-5zM90 21h5v4h-5zM36 11.5h4v3.5h-4zM46 11.5h4v3.5h-4zM70 11.5h4v3.5h-4z"/></g></svg>
+  </div>
+
+  <div class="ui">
+    <div class="bar">
+      <span class="status" id="status" data-s="wait" role="status"><i></i><span id="statusT">Bağlanıyor</span></span>
+      <button class="find" id="find" type="button" aria-haspopup="dialog"><span>Ara ya da komut yaz</span><kbd>/</kbd></button>
+    </div>
+    <div class="hero">
+      <section aria-label="Saat ve tarih">
+        <p class="greet" id="greet">Merhaba, Özcan.</p>
+        <div class="clock" id="clock" role="timer" aria-live="off"><span class="d" id="h1">0</span><span class="d" id="h2">0</span><span class="c">:</span><span class="d" id="m1">0</span><span class="d" id="m2">0</span><span class="s" id="ss">00</span></div>
+        <p class="date" id="date"></p>
+      </section>
+      <section class="wx" aria-label="Hava durumu">
+        <button class="city" id="cityBtn" type="button" title="Şehri değiştir"><span id="city">İstanbul</span><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4.4L9 3z"/></svg></button>
+        <div class="wx-main"><span id="wxIcon"></span><span class="wx-t" id="wxT">–°</span></div>
+        <p class="wx-desc" id="wxDesc">Hava durumu yükleniyor.</p>
+        <p class="wx-meta" id="wxMeta"></p>
+        <ol class="hours" id="hours" aria-label="Saatlik tahmin. Bir saatin üzerine gelince gökyüzü o saati gösterir."></ol>
+        <ol class="days" id="days" aria-label="Önümüzdeki günler"></ol>
+      </section>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="sheets" aria-label="Araçlarım">
+    <a class="sheet s-pace" id="sPace" href="https://ozcan-py.github.io/fastread/">
+      <div class="sheet-art" aria-hidden="true">
+        <div class="rsvp"><span class="rl"></span><span class="rp"></span><span class="rr"></span></div>
+        <span class="wpm">320 wpm</span>
+      </div>
+      <div class="sheet-txt"><h2>Pace</h2><p>Hızlı okuma ve göz antrenmanı. RSVP, Schulte tablosu, hız testi.</p><span class="key" aria-hidden="true">1</span></div>
+    </a>
+    <a class="sheet s-mecal" id="sMecal" href="https://ozcan-py.github.io/MeCal/">
+      <div class="sheet-art" aria-hidden="true">
+        <div class="cal"><div class="cal-day"><b id="calD"></b><span id="calM"></span><span id="calW"></span></div><div class="cal-grid" id="calG"></div></div>
+      </div>
+      <div class="sheet-txt"><h2>MeCal</h2><p>Günüm, haftam, rutinlerim ve hedeflerim tek takvimde.</p><span class="key" aria-hidden="true">2</span></div>
+    </a>
+    <a class="sheet s-yazi" id="sYazi" href="https://ozcan-py.github.io/HandWriting/">
+      <div class="sheet-art" aria-hidden="true">
+        <svg class="hw" viewBox="0 0 372 124">
+          <line class="thin" x1="0" x2="372" y1="30" y2="30"/><line class="mid" x1="0" x2="372" y1="55" y2="55"/><line class="base" x1="0" x2="372" y1="80" y2="80"/><line class="thin" x1="0" x2="372" y1="105" y2="105"/>
+          <text class="hw-a" x="8" y="80">güzel</text><text class="hw-b" x="132" y="80">güzel</text><text class="hw-c" x="256" y="80">güzel</text>
+        </svg>
+      </div>
+      <div class="sheet-txt"><h2>Güzel Yazı</h2><p>Yazdırmaya hazır el yazısı çalışma sayfaları. Dik, bağlantılı ve bitişik.</p><span class="key" aria-hidden="true">3</span></div>
+    </a>
+  </nav>
+  <p class="hint">Klavyeden <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> ile açılır. Arama ve komutlar için <kbd>/</kbd> tuşu.</p>
+
+  <section class="mk" aria-labelledby="mkh">
+    <div class="mk-head">
+      <h2 id="mkh">Borsa İstanbul</h2>
+      <p class="sessions" id="sessions"></p>
+    </div>
+    <p class="notice" id="notice" hidden><i></i><span>Önizleme modu. Bu ortamda dış bağlantılar kapalı olduğu için piyasa rakamları 18 Eylül 2026 13:16 anlık görüntüsü, hava durumu ise örnek veridir. Sayfa GitHub Pages'e yüklendiğinde hepsi canlıya geçer.</span></p>
+    <div class="tiles" id="tiles"></div>
+    <div class="tape" id="tape" hidden><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div></div></div>
+    <p class="foot">Hava durumu <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>, kur, altın ve BIST 100 <a href="https://finans.truncgil.com/" rel="noopener">Truncgil Finans</a>, kripto Binance, kur geçmişi Frankfurter (AMB), küresel piyasa bandı <a href="https://www.tradingview.com/" rel="noopener">TradingView</a> kaynaklıdır. BIST verisi gecikmelidir. Güneş ve ayın konumu bulunduğun şehir için astronomik olarak hesaplanır. Buradaki hiçbir rakam yatırım tavsiyesi değildir. <span id="mkAt"></span></p>
+  </section>
+</main>
+
+<dialog id="cmd" aria-label="Arama ve komutlar">
+  <div class="cmd">
+    <input id="q" type="text" placeholder="Ara ya da komut yaz" autocomplete="off" autocapitalize="off" spellcheck="false" role="combobox" aria-controls="list" aria-expanded="true" aria-autocomplete="list">
+    <ul id="list" role="listbox"></ul>
+    <p class="cmd-foot" id="cmdFoot"><span><kbd>↑</kbd><kbd>↓</kbd>seç</span><span><kbd>↵</kbd>aç</span><span><kbd>esc</kbd>kapat</span><span>Şehir aramak için “hava bursa” gibi yaz.</span></p>
+  </div>
+</dialog>
+
+<script>
+(()=>{'use strict';
+/* ═══ Yardımcılar ═══════════════════════════════════════ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const root=document.documentElement, sky=$('#sky');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const pad=n=>String(n).padStart(2,'0'), clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t)};
+const bell=(x,c,w)=>Math.exp(-(((x-c)/w)**2));
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix=(a,b,t)=>{const A=rgb(a),B=rgb(b);t=clamp(t,0,1);return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join('')};
+const fmt=(v,d=2)=>new Intl.NumberFormat('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
+const rng=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+async function getJSON(u,ms=8000){const r=await fetch(u,{signal:AbortSignal.timeout(ms)});if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+async function firstOK(urls,ms){let err;for(const u of urls){try{return await getJSON(u,ms)}catch(e){err=e}}throw err}
+
+/* Adres çubuğuna ?t=21:30 ya da ?t=2026-12-24T07:40 ekleyince sayfa o anı gösterir */
+let offset=0;{const t=new URLSearchParams(location.search).get('t');if(t){let d;if(/^\d{1,2}:\d{2}$/.test(t)){d=new Date();const[h,m]=t.split(':');d.setHours(+h,+m,0,0)}else d=new Date(t);if(!isNaN(d))offset=d.getTime()-Date.now()}}
+const now=()=>Date.now()+offset;
+
+const CITIES=[{name:'İstanbul',lat:41.0082,lon:28.9784},{name:'Ankara',lat:39.9334,lon:32.8597},{name:'İzmir',lat:38.4237,lon:27.1428}];
+const state={city:store.get('home.city',CITIES[0]),cloud:30,code:1,wx:null,previewing:false};
+const net={wx:null,fx:null};
+
+/* ═══ Astronomi: güneş ve ayın gerçek konumu ════════════ */
+const RAD=Math.PI/180,OBL=RAD*23.4397,toDays=ms=>ms/864e5-10957.5;
+function sunC(d){const M=RAD*(357.5291+.98560028*d),C=RAD*(1.9148*Math.sin(M)+.02*Math.sin(2*M)+.0003*Math.sin(3*M)),L=M+C+RAD*102.9372+Math.PI;
+  return{dec:Math.asin(Math.sin(OBL)*Math.sin(L)),ra:Math.atan2(Math.sin(L)*Math.cos(OBL),Math.cos(L))}}
+function moonC(d){const L=RAD*(218.316+13.176396*d),M=RAD*(134.963+13.064993*d),F=RAD*(93.272+13.22935*d),l=L+RAD*6.289*Math.sin(M),b=RAD*5.128*Math.sin(F);
+  return{ra:Math.atan2(Math.sin(l)*Math.cos(OBL)-Math.tan(b)*Math.sin(OBL),Math.cos(l)),dec:Math.asin(Math.sin(b)*Math.cos(OBL)+Math.cos(b)*Math.sin(OBL)*Math.sin(l)),dist:385001-20905*Math.cos(M)}}
+function horiz(c,d,lat,lon){const phi=lat*RAD,H=RAD*(280.16+360.9856235*d)+lon*RAD-c.ra;
+  const alt=Math.asin(Math.sin(phi)*Math.sin(c.dec)+Math.cos(phi)*Math.cos(c.dec)*Math.cos(H));
+  const az=Math.atan2(Math.sin(H),Math.cos(H)*Math.sin(phi)-Math.tan(c.dec)*Math.cos(phi));
+  return{alt:alt/RAD,az:((az/RAD+180)%360+360)%360}}
+const sunAt=(ms,c=state.city)=>{const d=toDays(ms);return horiz(sunC(d),d,c.lat,c.lon)};
+const moonAt=(ms,c=state.city)=>{const d=toDays(ms);return horiz(moonC(d),d,c.lat,c.lon)};
+function moonIll(ms){const d=toDays(ms),s=sunC(d),m=moonC(d),sd=149598000;
+  const phi=Math.acos(Math.sin(s.dec)*Math.sin(m.dec)+Math.cos(s.dec)*Math.cos(m.dec)*Math.cos(s.ra-m.ra));
+  const inc=Math.atan2(sd*Math.sin(phi),m.dist-sd*Math.cos(phi));
+  const ang=Math.atan2(Math.cos(s.dec)*Math.sin(s.ra-m.ra),Math.sin(s.dec)*Math.cos(m.dec)-Math.cos(s.dec)*Math.sin(m.dec)*Math.cos(s.ra-m.ra));
+  return{fraction:(1+Math.cos(inc))/2,phase:.5+.5*inc*(ang<0?-1:1)/Math.PI}}
+function sunTimes(ms){const d0=new Date(ms);d0.setHours(0,0,0,0);let rise=null,set=null,prev=null;
+  for(let m=0;m<=1440;m+=2){const t=d0.getTime()+m*6e4,a=sunAt(t).alt;if(prev!=null){if(prev<-.833&&a>=-.833&&rise==null)rise=t;if(prev>=-.833&&a<-.833)set=t}prev=a}
+  return{rise:rise??d0.getTime()+6*36e5,set:set??d0.getTime()+18*36e5}}
+
+/* ═══ Gökyüzü paleti: güneş yüksekliğine göre ═══════════ */
+const STOPS=[ // yükseklik°, üst, orta, ufuk, güneş
+  [-18,'#040713','#080d22','#0e1530','#dfe6ff'],
+  [-10,'#060b1d','#0e1738','#1c2750','#dfe6ff'],
+  [ -6,'#0b1230','#1d2456','#483e76','#ff8e6b'],
+  [ -3,'#131b45','#3b356f','#b26078','#ff7d55'],
+  [  0,'#1c2b61','#6b4d88','#f0895c','#ff8a4f'],
+  [  3,'#274184','#9a779c','#f6b26b','#ffab5e'],
+  [  8,'#274f96','#6f8fc4','#f2d2a4','#ffd089'],
+  [ 16,'#1f58a6','#5590d2','#cfe0ee','#ffedb8'],
+  [ 30,'#174e9c','#3d7dcc','#a8cdec','#fff3cc'],
+  [ 90,'#14488f','#3877c8','#a0c8ea','#fff6d8']];
+function paletteAt(alt,eve){let i=0;while(i<STOPS.length-2&&alt>STOPS[i+1][0])i++;
+  const a=STOPS[i],b=STOPS[i+1],t=clamp((alt-a[0])/(b[0]-a[0]),0,1),c=[1,2,3,4].map(j=>mix(a[j],b[j],t));
+  if(!eve){const w=bell(alt,1,7);c[1]=mix(c[1],'#7b83bd',.25*w);c[2]=mix(c[2],'#f4a9b6',.4*w);c[3]=mix(c[3],'#ffc2a1',.3*w)} // sabahlar daha pembe
+  return c}
+const isWet=c=>(c>=51&&c<=67)||(c>=80&&c<=82)||c>=95, isSnow=c=>(c>=71&&c<=77)||c===85||c===86;
+
+let geo={hor:400,top:70};
+function measure(){const h=sky.clientHeight,wh=$('.water').offsetHeight,sh=$('#skyline').getBoundingClientRect().height;geo.hor=h-wh-sh*.2;geo.top=Math.max(62,h*.1)}
+const xOf=az=>4+(clamp(az,60,300)-60)/240*92, yOf=alt=>geo.hor-clamp(alt,-14,72)/72*(geo.hor-geo.top);
+const fx={night:0,wet:0,snow:0};
+let shown=now(),tweenId=0;
+
+function paint(ms,o={}){
+  const s=sunAt(ms),m=moonAt(ms),ill=moonIll(ms),eve=s.az>180,night=smooth(-1,-9,s.alt);
+  const cover=(o.cloud??state.cloud)/100,code=o.code??state.code,wet=isWet(code),snow=isSnow(code);
+  let[top,mid,hor,sunc]=paletteAt(s.alt,eve);
+  const gT=mix('#5a6672','#090d18',night),gH=mix('#9ba6af','#141a2a',night),k=clamp(cover*cover*.78+(wet||snow?.14:0),0,.9);
+  top=mix(top,gT,k);mid=mix(mid,mix(gT,gH,.5),k);hor=mix(hor,gH,k*.92);
+  const sil=mix('#060c19',mid,.17*(1-night)),st=root.style,set=(n,v)=>st.setProperty(n,v);
+  set('--sky-top',top);set('--sky-mid',mid);set('--sky-hor',hor);set('--sun',sunc);
+  set('--deep',mix('#050a14',top,.2));set('--sea',mix(mix(hor,mid,.45),'#08182e',.52+night*.22));
+  set('--sil',sil);set('--sil-mid',mix(sil,hor,.2-night*.1));set('--sil-far',mix(sil,hor,.5-night*.2));
+  set('--cloud',mix(mix('#ffffff',hor,.3),'#182038',night*.88));
+  const sx=xOf(s.az),sy=yOf(s.alt),mx=xOf(m.az),my=yOf(m.alt),moonUp=m.alt>-1;
+  set('--sun-x',sx+'%');set('--sun-y',sy+'px');set('--sun-s',(1+.35*smooth(12,0,s.alt)).toFixed(3));
+  set('--moon-x',mx+'%');set('--moon-y',my+'px');set('--moon-o',(moonUp?clamp(.22+night*.78,0,1)*(1-k*.7):0).toFixed(2));
+  set('--night',night.toFixed(3));set('--glow',(bell(s.alt,1.5,8)*(1-k*.75)).toFixed(3));
+  if(s.alt>-2){set('--lum',sunc);set('--lum-x',sx+'%');set('--lum-y',Math.min(sy,geo.hor-40)+'px');set('--glitter',((.16+.5*bell(s.alt,5,12))*(1-k*.7)).toFixed(3))}
+  else if(moonUp){set('--lum','#dfe7ff');set('--lum-x',mx+'%');set('--lum-y',Math.min(my,geo.hor-40)+'px');set('--glitter',(.34*ill.fraction*night*(1-k*.7)).toFixed(3))}
+  else{set('--lum','#cfd9ff');set('--lum-x','50%');set('--lum-y',geo.top+'px');set('--glitter','0')}
+  // Ayın evresi
+  const ph=ill.phase,p=ph<=.5?ph*2:(1-ph)*2,r=48,rx=Math.abs(1-2*p)*r,ml=$('#moonLit');
+  ml.setAttribute('d',`M0 ${-r}A${r} ${r} 0 0 1 0 ${r}A${rx.toFixed(2)} ${r} 0 0 ${p<.5?0:1} 0 ${-r}z`);ml.setAttribute('transform',ph>.5?'scale(-1,1)':'');
+  // Bulutlar: kapalılık arttıkça sırayla belirir
+  $$('.cloud').forEach((c,i)=>c.style.setProperty('--o',(clamp((cover*100-(4+i*13))/18,0,1)*(.92-night*.3)).toFixed(2)));
+  $('meta[name=theme-color]').content=top;
+  fx.night=night*(1-k*.9);fx.wet=wet?(code>=63&&code!==80?1:.55):0;fx.snow=snow?1:0;kick();
+}
+function tweenTo(target,ms,o){cancelAnimationFrame(tweenId);const from=shown,t0=performance.now();
+  if(reduce||ms<=0){shown=target;paint(shown,o);return}
+  const step=t=>{const k=Math.min(1,(t-t0)/ms),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;shown=from+(target-from)*e;paint(shown,o);if(k<1)tweenId=requestAnimationFrame(step)};
+  tweenId=requestAnimationFrame(step)}
+
+/* Yıldızlar, yağmur ve kar aynı tuvalde */
+const cv=$('#stars'),cx=cv.getContext('2d');let W=0,Hh=0,stars=[],drops=[],raf=0,lastT=0,frame=0;
+function sizeCanvas(){const dpr=Math.min(2,devicePixelRatio||1);W=sky.clientWidth;Hh=sky.clientHeight;cv.width=W*dpr;cv.height=Hh*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+  const r=rng(5);stars=Array.from({length:Math.round(W*Hh/4600)},()=>({x:r()*W,y:r()*Hh*.8,s:.35+r()*1.15,p:r()*6.28,v:.5+r()*1.7}));
+  drops=Array.from({length:150},()=>({x:r()*W*1.2,y:r()*Hh,l:9+r()*14,v:430+r()*360,p:r()*6.28}))}
+function draw(t){const dt=Math.min(.05,(t-lastT)/1000||0);lastT=t;frame++;
+  const moving=fx.wet>0||fx.snow>0;if(!moving&&frame%3)return; // yalnız yıldız varken kare hızını düşür
+  cx.clearRect(0,0,W,Hh);
+  if(fx.night>.02){cx.fillStyle='#fff';for(const s of stars){cx.globalAlpha=fx.night*(reduce?.8:.55+.45*Math.sin(t/1000*s.v+s.p));cx.beginPath();cx.arc(s.x,s.y,s.s,0,6.283);cx.fill()}}
+  if(fx.wet>0){cx.globalAlpha=.34;cx.strokeStyle='#eaf2ff';cx.lineWidth=1;cx.beginPath();const n=Math.round(drops.length*fx.wet);
+    for(let i=0;i<n;i++){const d=drops[i];d.y+=d.v*dt;d.x-=d.v*dt*.16;if(d.y>Hh){d.y=-20;d.x=Math.random()*W*1.2}cx.moveTo(d.x,d.y);cx.lineTo(d.x+d.l*.16,d.y-d.l)}cx.stroke()}
+  if(fx.snow>0){cx.fillStyle='#fff';cx.globalAlpha=.85;for(let i=0;i<90;i++){const d=drops[i];d.y+=d.v*dt*.09;d.x+=Math.sin(t/900+d.p)*.35;if(d.y>Hh){d.y=-6;d.x=Math.random()*W}cx.beginPath();cx.arc(d.x,d.y,1+d.l/16,0,6.283);cx.fill()}}
+  cx.globalAlpha=1}
+function loop(t){draw(t);raf=(!reduce&&!document.hidden&&(fx.night>.02||fx.wet>0||fx.snow>0))?requestAnimationFrame(loop):0;if(!raf&&fx.night<=.02&&!fx.wet&&!fx.snow)cx.clearRect(0,0,W,Hh)}
+function kick(){if(reduce){frame=-1;draw(0);return}if(!raf&&!document.hidden)raf=requestAnimationFrame(loop)}
+
+/* Silüet: uzak tepeler ve evler rastgele tohumla üretilir, simge yapılar elle çizilir */
+function buildSkyline(){
+  const H=240,Wd=1600,r=rng(11),n=v=>+(+v).toFixed(1);
+  const R=(x,y,w,h)=>`M${n(x)} ${n(y)}h${n(w)}v${n(h)}h${-n(w)}z`,D=(c,by,rx,ry=rx)=>`M${c-rx} ${by}A${rx} ${ry} 0 0 1 ${c+rx} ${by}z`,T=(c,by,w,h)=>`M${c-w/2} ${by}L${c} ${n(by-h)}L${c+w/2} ${by}z`;
+  let far=`M0 ${H}`;for(let x=0;x<=Wd;x+=16){const g=x>1330&&x<1570?.5:1;far+=`L${x} ${n(H-g*(58+24*Math.sin(x/190+.6)+13*Math.sin(x/67+2)+6*Math.sin(x/29)))}`}far+=`L${Wd} ${H}z`;
+  const bump=(x,c,w,a)=>a*Math.exp(-(((x-c)/w)**2)),env=x=>(x>1352&&x<1548)?0:24+bump(x,520,120,42)+bump(x,860,230,30)+bump(x,1130,120,18)+bump(x,130,170,16)+8*Math.sin(x/90);
+  let city='',win='';
+  for(let x=-6;x<Wd;){const w=9+r()*20,e=env(x+w/2);if(e<=0){x+=w;continue}const h=e*(.5+r()*.62),y=H-h;city+=R(x,y,w,h+1);if(r()<.22)city+=R(x+w*.3,y-4,w*.3,5);
+    for(let wy=y+4;wy<H-5;wy+=7)for(let wx=x+2.5;wx<x+w-3;wx+=5)if(r()<.3)win+=R(wx,wy,1.8,2.6);x+=w+(r()<.15?2:0)}
+  const minaret=(c,h)=>`M${c-3.6} ${H}L${c-2.7} ${H-h}L${c+2.7} ${H-h}L${c+3.6} ${H}z`+R(c-6.5,H-h*.54,13,4)+R(c-5.8,H-h*.77,11.6,3.4)+T(c,H-h,7.6,h*.15)+R(c-.6,H-h*1.15-7,1.2,7);
+  let land='';
+  { const c=520; land+=R(c-16,H-128,32,128)+R(c-20,H-134,40,6)+R(c-14,H-148,28,14)+T(c,H-148,38,34)+R(c-.7,H-192,1.4,11); }           // Galata Kulesi
+  { const c=860; land+=R(c-130,H-44,260,44)+R(c-94,H-66,188,24)+D(c-66,H-66,31,25)+D(c+66,H-66,31,25)+R(c-48,H-88,96,24)+D(c,H-88,48,42)+R(c-.8,H-142,1.6,13)
+      +D(c-112,H-44,13,10)+D(c+112,H-44,13,10)+D(c-30,H-88,0,0)+minaret(c-152,186)+minaret(c+152,186)+minaret(c-206,146)+minaret(c+206,146); }   // büyük cami
+  { const c=1130; land+=R(c-70,H-34,140,34)+R(c-46,H-52,92,20)+D(c-37,H-52,19,15)+D(c+37,H-52,19,15)+R(c-28,H-66,56,16)+D(c,H-66,28,25)+R(c-.7,H-101,1.4,11)+minaret(c-90,134)+minaret(c+90,134); } // küçük cami
+  const tw=x=>R(x-5,H-150,3.4,150)+R(x+1.6,H-150,3.4,150)+R(x-5,H-146,10,3)+R(x-5,H-112,10,3)+R(x-5,H-56,10,3);
+  land+=tw(1350)+tw(1550)+R(1200,H-52,420,4.6);
+  const cab='M1350 90Q1450 274 1550 90',sideL='M1350 90Q1292 150 1208 188',sideR='M1550 90Q1594 140 1650 178';
+  let hang='';for(let x=1362;x<1540;x+=12){const t=(x-1350)/200,y=(1-t)*(1-t)*90+2*(1-t)*t*274+t*t*90;hang+=`M${x} ${n(y)}V188`}
+  for(let x=1222;x<1345;x+=12){const t=(1350-x)/142,y=90+(188-90)*Math.pow(t,1.35);hang+=`M${x} ${n(y)}V188`}
+  $('#skyline').innerHTML=`<path class="far" d="${far}"/><path class="city" d="${city}"/><path class="land" d="${land}"/>
+    <path class="br" stroke-width="2.2" d="${cab}${sideL}${sideR}"/><path class="br" stroke-width=".8" d="${hang}"/>
+    <path class="led" d="${cab}${sideL}${sideR}"/><path class="win" d="${win}"/>`;
+  // Bulutlar
+  const cr=rng(3);$('#clouds').innerHTML=Array.from({length:7},(_,i)=>{const w=18+cr()*20,d=150+cr()*170;
+    return `<div class="cloud" style="--y:${(5+cr()*46).toFixed(1)}%;--w:${w.toFixed(1)}vw;--d:${d.toFixed(0)}s;--dl:-${(cr()*d).toFixed(0)}s;--b:${(5+w/5).toFixed(1)}px;--rx:${(cr()*80).toFixed(0)}vw">
+      <svg viewBox="0 0 300 100" preserveAspectRatio="none"><ellipse cx="90" cy="68" rx="80" ry="26"/><ellipse cx="150" cy="50" rx="72" ry="40"/><ellipse cx="215" cy="66" rx="76" ry="28"/><ellipse cx="120" cy="40" rx="40" ry="26"/></svg></div>`}).join('');
+}
+
+/* ═══ Saat, tarih, selam ════════════════════════════════ */
+const dateF=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'long',year:'numeric',weekday:'long'});
+function isoWeek(d){const t=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())),k=t.getUTCDay()||7;t.setUTCDate(t.getUTCDate()+4-k);return Math.ceil(((t-Date.UTC(t.getUTCFullYear(),0,1))/864e5+1)/7)}
+let lastMin=-1,lastDay=-1;
+function tick(){const d=new Date(now()),h=pad(d.getHours()),m=pad(d.getMinutes());
+  $('#ss').textContent=pad(d.getSeconds());
+  if(d.getMinutes()!==lastMin){lastMin=d.getMinutes();$('#h1').textContent=h[0];$('#h2').textContent=h[1];$('#m1').textContent=m[0];$('#m2').textContent=m[1];
+    const hr=d.getHours();$('#greet').textContent=(hr<5?'İyi geceler':hr<11?'Günaydın':hr<17?'İyi günler':hr<22?'İyi akşamlar':'İyi geceler')+', Özcan.';
+    $('#clock').setAttribute('aria-label',`Saat ${h}:${m}`);sessions();if(!state.previewing&&!tweenId){shown=now();paint(shown)}}
+  if(d.getDate()!==lastDay){lastDay=d.getDate();$('#date').textContent=`${dateF.format(d)}, ${isoWeek(d)}. hafta`;buildCal(d)}
+  setTimeout(tick,1000-(now()%1000)+5)}
+
+/* ═══ Hava durumu ═══════════════════════════════════════ */
+const WMO={0:'Açık',1:'Çoğunlukla açık',2:'Parçalı bulutlu',3:'Kapalı',45:'Sisli',48:'Kırağılı sis',51:'Hafif çisenti',53:'Çisenti',55:'Yoğun çisenti',56:'Donan çisenti',57:'Donan çisenti',61:'Hafif yağmur',63:'Yağmur',65:'Kuvvetli yağmur',66:'Donan yağmur',67:'Donan yağmur',71:'Hafif kar',73:'Kar',75:'Yoğun kar',77:'Kar taneleri',80:'Hafif sağanak',81:'Sağanak',82:'Kuvvetli sağanak',85:'Kar sağanağı',86:'Yoğun kar sağanağı',95:'Gök gürültülü fırtına',96:'Dolulu fırtına',99:'Dolulu fırtına'};
+const kind=c=>c<=1?'clear':c===2?'partly':c===3?'cloud':c<50?'fog':c<58?'drizzle':c<70?'rain':c<80?'snow':c<83?'rain':c<87?'snow':'storm';
+const CLOUD='M7.2 18.5h9.6a4 4 0 0 0 .5-7.97 5.6 5.6 0 0 0-10.7-1.2A4.6 4.6 0 0 0 7.2 18.5z',UP='<g transform="translate(0 -2.6)">';
+const ICON={
+  sun:'<circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.3M12 19.1v2.3M2.6 12h2.3M19.1 12h2.3M5.4 5.4 7 7M17 17l1.6 1.6M5.4 18.6 7 17M17 7l1.6-1.6"/>',
+  moon:'<path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.4 6.4 0 0 0 10.2 10.2z"/>',
+  pd:'<path d="M12.3 7.2A3.6 3.6 0 1 0 5.6 9.4M8.6 1.8v1.5M2.4 7.6H1M4.2 3.4l1 1M13 3.4l-1 1"/><path d="M9.6 20h7.6a3.4 3.4 0 0 0 .4-6.78 4.8 4.8 0 0 0-9.1-1A3.9 3.9 0 0 0 9.6 20z"/>',
+  pn:'<path d="M12.6 3.2a4.3 4.3 0 0 0-7 4.6 3.4 3.4 0 0 1 7-4.6z"/><path d="M9.6 20h7.6a3.4 3.4 0 0 0 .4-6.78 4.8 4.8 0 0 0-9.1-1A3.9 3.9 0 0 0 9.6 20z"/>',
+  cloud:`<path d="${CLOUD}"/>`,
+  fog:`${UP}<path d="${CLOUD}"/></g><path d="M6 19.4h12M8.5 22h7"/>`,
+  drizzle:`${UP}<path d="${CLOUD}"/></g><path stroke-width="2.1" d="M8.5 19.6h.01M12 21.6h.01M15.5 19.6h.01"/>`,
+  rain:`${UP}<path d="${CLOUD}"/></g><path d="M8.8 18.8l-1 2.8M12.6 18.8l-1 2.8M16.4 18.8l-1 2.8"/>`,
+  snow:`${UP}<path d="${CLOUD}"/></g><path stroke-width="2.2" d="M8.3 19.4h.01M12 21.8h.01M15.7 19.4h.01M10.1 22.4h.01M13.9 22.4h.01"/>`,
+  storm:`${UP}<path d="${CLOUD}"/></g><path d="M12.8 16.6l-2.6 3.4h3l-1.6 3"/>`};
+const ico=(code,day)=>{const k=kind(code),p=k==='clear'?(day?ICON.sun:ICON.moon):k==='partly'?(day?ICON.pd:ICON.pn):ICON[k];return `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`};
+const compass=deg=>['K','KD','D','GD','G','GB','B','KB'][Math.round(deg/45)%8];
+
+function renderWx(w){state.wx=w;const c=w.current,off=(w.utc_offset_seconds||0)*1000,toMs=s=>Date.parse(s+':00Z')-off,D=w.daily,Hr=w.hourly;
+  $('#city').textContent=state.city.name;$('#wxIcon').innerHTML=ico(c.weather_code,c.is_day);$('#wxT').textContent=Math.round(c.temperature_2m)+'°';
+  $('#wxDesc').textContent=`${WMO[c.weather_code]||'Hava'}. Hissedilen ${Math.round(c.apparent_temperature)}°.`;
+  let sunTxt='';if(D?.sunrise){const nowS=c.time,idx=D.sunrise.findIndex((s,i)=>nowS<D.sunset[i]);if(idx>=0)sunTxt=nowS<D.sunrise[idx]?` Gün doğumu ${D.sunrise[idx].slice(11,16)}.`:` Gün batımı ${D.sunset[idx].slice(11,16)}.`}
+  $('#wxMeta').textContent=`Rüzgâr ${compass(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)} km/sa, nem %${Math.round(c.relative_humidity_2m)}. En yüksek ${Math.round(D.temperature_2m_max[0])}°, en düşük ${Math.round(D.temperature_2m_min[0])}°.${sunTxt}`;
+  let i0=Hr.time.findIndex(t=>t>c.time);if(i0<0)i0=0;
+  $('#hours').innerHTML=Hr.time.slice(i0,i0+8).map((t,j)=>{const i=i0+j,pp=Hr.precipitation_probability?.[i]??0;
+    return `<li><button type="button" data-ms="${toMs(t)}" data-cloud="${Hr.cloud_cover?.[i]??state.cloud}" data-code="${Hr.weather_code[i]}" aria-label="${t.slice(11,16)}, ${WMO[Hr.weather_code[i]]||''}, ${Math.round(Hr.temperature_2m[i])} derece">${t.slice(11,13)}${ico(Hr.weather_code[i],Hr.is_day?.[i]??1)}<b>${Math.round(Hr.temperature_2m[i])}°</b><em>${pp>=30?'%'+pp:''}</em></button></li>`}).join('');
+  const wd=new Intl.DateTimeFormat('tr-TR',{weekday:'short',timeZone:'UTC'});
+  $('#days').innerHTML=D.time.slice(1,5).map((t,j)=>{const i=j+1;return `<li>${wd.format(new Date(t+'T12:00:00Z'))}${ico(D.weather_code[i],1)}<b>${Math.round(D.temperature_2m_max[i])}°</b><span>${Math.round(D.temperature_2m_min[i])}°</span></li>`}).join('');
+  state.cloud=c.cloud_cover??30;state.code=c.weather_code;if(!state.previewing&&!tweenId)paint(shown)}
+function wxEmpty(){$('#wxIcon').innerHTML='';$('#wxT').textContent='–°';$('#wxDesc').textContent='Hava durumu şu an alınamıyor.';$('#wxMeta').textContent='Birkaç dakika içinde yeniden denenecek.';$('#hours').innerHTML='';$('#days').innerHTML=''}
+function sampleWx(){const n=now(),off=-new Date(n).getTimezoneOffset()*60,iso=t=>new Date(t+off*1000).toISOString().slice(0,16),d0=new Date(n);d0.setHours(0,0,0,0);
+  const temp=h=>19.5+5.5*Math.sin((h-9)/24*2*Math.PI),Hr={time:[],temperature_2m:[],weather_code:[],precipitation_probability:[],cloud_cover:[],is_day:[]};
+  for(let i=0;i<72;i++){const t=d0.getTime()+i*36e5,cc=34+26*Math.sin(i/5);Hr.time.push(iso(t));Hr.temperature_2m.push(temp(i%24));Hr.cloud_cover.push(Math.round(cc));Hr.weather_code.push(cc>46?2:1);Hr.precipitation_probability.push(5);Hr.is_day.push(sunAt(t).alt>0?1:0)}
+  const D={time:[],weather_code:[2,1,3,61,2],temperature_2m_max:[25,26,24,21,23],temperature_2m_min:[18,18,17,16,16],sunrise:[],sunset:[]};
+  for(let k=0;k<5;k++){const t=d0.getTime()+k*864e5,s=sunTimes(t+432e5);D.time.push(iso(t).slice(0,10));D.sunrise.push(iso(s.rise));D.sunset.push(iso(s.set))}
+  const d=new Date(n),hh=d.getHours()+d.getMinutes()/60;
+  return{utc_offset_seconds:off,current:{time:iso(n),temperature_2m:temp(hh),apparent_temperature:temp(hh)+.8,relative_humidity_2m:61,is_day:sunAt(n).alt>0?1:0,weather_code:2,cloud_cover:38,wind_speed_10m:14,wind_direction_10m:40},hourly:Hr,daily:D}}
+async function loadWx(){const{lat,lon}=state.city,key=lat.toFixed(3)+','+lon.toFixed(3);
+  const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,is_day,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m&hourly=temperature_2m,weather_code,precipitation_probability,cloud_cover,is_day&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&forecast_days=5`;
+  try{const w=await getJSON(u);net.wx=true;store.set('home.wx',{at:Date.now(),key,w});renderWx(w)}
+  catch{net.wx=false;const c=store.get('home.wx');if(c&&c.key===key&&Date.now()-c.at<6*36e5)renderWx(c.w);else if(!state.wx)wxEmpty()}
+  status()}
+// Saatin üzerine gelince gökyüzü o saate gider, bırakınca şimdiye döner
+function hourPreview(){const box=$('#hours'),tag=$('#tag');let back=0;
+  const on=b=>{clearTimeout(back);state.previewing=true;$$('button',box).forEach(x=>x.classList.toggle('on',x===b));const ms=+b.dataset.ms+offset*0;tag.hidden=false;tag.textContent=new Date(ms).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})+' tahmini';tweenTo(ms,650,{cloud:+b.dataset.cloud,code:+b.dataset.code})};
+  const off=()=>{clearTimeout(back);back=setTimeout(()=>{state.previewing=false;tag.hidden=true;$$('button',box).forEach(x=>x.classList.remove('on'));tweenTo(now(),650)},120)};
+  box.addEventListener('pointerover',e=>{const b=e.target.closest('button');if(b&&e.pointerType!=='touch')on(b)});box.addEventListener('pointerleave',off);
+  box.addEventListener('focusin',e=>{const b=e.target.closest('button');if(b)on(b)});box.addEventListener('focusout',off);
+  box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;on(b);clearTimeout(back);back=setTimeout(()=>{b.blur();off()},3200)})}
+
+/* ═══ Piyasalar ═════════════════════════════════════════ */
+const TILE_DEF=[
+  {id:'xu100',name:'BIST 100',sub:'XU100',dec:2,big:true},
+  {id:'usdtry',name:'USD/TRY',sub:'Dolar',dec:4},{id:'eurtry',name:'EUR/TRY',sub:'Euro',dec:4},{id:'eurusd',name:'EUR/USD',sub:'Parite',dec:4},
+  {id:'gram',name:'Gram altın',sub:'TL',dec:2},{id:'btc',name:'BTC/USD',sub:'Bitcoin',dec:0,pre:'$'},{id:'eth',name:'ETH/USD',sub:'Ethereum',dec:2,pre:'$'}];
+const TRI='<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1l4.4 8H.6z"/></svg>',T={};
+function buildTiles(){$('#tiles').innerHTML=TILE_DEF.map(t=>`<article class="tile${t.big?' tile--bist':''}" id="t-${t.id}">
+    <p class="t-name">${t.name}<small>${t.sub}</small></p>${t.big?'':'<svg class="spark" viewBox="0 0 100 32" preserveAspectRatio="none" hidden aria-hidden="true"></svg>'}
+    <p class="t-val">—</p><p class="t-row"><span class="chg" data-d="flat" hidden>${TRI}<span></span></span><span class="t-more"></span></p>
+    ${t.big?'<div class="track" id="track" data-open="false"><i></i><b></b></div><p class="track-lab"><span>10:00</span><span id="trackMid"></span><span>18:00</span></p>':''}</article>`).join('');
+  for(const t of TILE_DEF){const el=$('#t-'+t.id);T[t.id]={...t,el,val:$('.t-val',el),chg:$('.chg',el),chgT:$('.chg span',el),more:$('.t-more',el),spark:$('.spark',el),v:null}}}
+function setTile(id,{v,ch,more}){const t=T[id];if(!t)return;
+  if(v==null||!isFinite(v)||v<=0){t.val.textContent='—';t.chg.hidden=true}
+  else{const prev=t.v;t.v=v;t.val.textContent=(t.pre||'')+fmt(v,t.dec);
+    if(prev!=null&&prev!==v&&!reduce){t.val.classList.remove('up','down');void t.val.offsetWidth;t.val.classList.add(v>prev?'up':'down');clearTimeout(t.tm);t.tm=setTimeout(()=>t.val.classList.remove('up','down'),420)}
+    if(ch!=null&&isFinite(ch)){const d=ch>0.004?'up':ch<-0.004?'down':'flat';t.chg.dataset.d=d;t.chgT.textContent='%'+fmt(Math.abs(ch),2);t.chg.hidden=false;t.chg.setAttribute('aria-label',(d==='up'?'Yükseliş ':d==='down'?'Düşüş ':'Değişim ')+'yüzde '+fmt(Math.abs(ch),2))}}
+  if(more!=null)t.more.textContent=more}
+function spark(id,arr){const t=T[id];if(!t?.spark||!arr||arr.length<3)return;const mn=Math.min(...arr),mx=Math.max(...arr),n=arr.length;
+  const line='M'+arr.map((y,i)=>`${(i/(n-1)*100).toFixed(2)} ${(29-((y-mn)/((mx-mn)||1))*26).toFixed(2)}`).join('L');
+  t.spark.innerHTML=`<path class="sa" d="${line}L100 32L0 32z"/><path class="sl" d="${line}"/>`;t.spark.dataset.d=arr[n-1]>=arr[0]?'up':'down';t.spark.hidden=false}
+
+// Truncgil Finans: BIST 100, kur, altın
+const SEED={at:Date.parse('2026-09-18T13:16:02+03:00'),USD:{v:48.7932,b:48.7769,ch:.11},EUR:{v:56.0709,b:56.0554,ch:-.07},GRA:{v:6869.22,ch:.98},XU100:{v:13288.22,ch:-1.64},CEYREK:11166.26};
+const stampF=new Intl.DateTimeFormat('tr-TR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),hmF=new Intl.DateTimeFormat('tr-TR',{hour:'2-digit',minute:'2-digit'});
+function applyFx(f){
+  setTile('xu100',{v:f.XU100?.v,ch:f.XU100?.ch,more:'15 dakikaya kadar gecikmeli'});
+  setTile('usdtry',{v:f.USD.v,ch:f.USD.ch,more:f.USD.b?'Alış '+fmt(f.USD.b,4):''});
+  setTile('eurtry',{v:f.EUR.v,ch:f.EUR.ch,more:f.EUR.b?'Alış '+fmt(f.EUR.b,4):''});
+  setTile('eurusd',{v:f.EUR.v/f.USD.v,ch:((1+f.EUR.ch/100)/(1+f.USD.ch/100)-1)*100,more:'Çapraz kurdan hesaplanır'});
+  setTile('gram',{v:f.GRA?.v,ch:f.GRA?.ch,more:f.CEYREK?'Çeyrek '+fmt(f.CEYREK,0)+' TL':''});
+  const old=Date.now()-f.at>20*6e4;$('#mkAt').textContent=`Kur ve endeks verisinin son güncellemesi ${old?stampF.format(f.at):hmF.format(f.at)}.`}
+async function loadFx(){try{const r=await getJSON('https://finans.truncgil.com/v4/today.json?_='+Math.floor(Date.now()/6e4));
+    const g=k=>r?.[k]?{v:+r[k].Selling,b:+r[k].Buying||0,ch:+r[k].Change}:null,USD=g('USD'),EUR=g('EUR');if(!USD?.v||!EUR?.v)throw new Error('biçim');
+    const at=Date.parse(String(r.Update_Date||'').replace(' ','T')+'+03:00')||Date.now(),f={at,USD,EUR,GRA:g('GRA'),XU100:g('XU100'),CEYREK:+r.CEYREKALTIN?.Selling||0};
+    net.fx=true;store.set('home.fx',f);applyFx(f)}
+  catch{net.fx=false;const c=store.get('home.fx');if(c)applyFx(c)}
+  status()}
+
+// Kripto: Binance canlı akış, olmazsa REST, o da olmazsa CoinGecko
+const CX={ws:null,tries:0,mode:'ws',timer:0};
+const cxMore=(l,h,d)=>`Gün içi ${fmt(l,d)} – ${fmt(h,d)}`;
+function cxStart(){if(document.hidden)return;CX.mode==='ws'?cxWS():cxPoll()}
+function cxStop(){clearTimeout(CX.timer);const w=CX.ws;CX.ws=null;try{w?.close()}catch{}}
+function cxWS(){if(CX.ws)return;let ws,got=false;
+  try{ws=new WebSocket(['wss://stream.binance.com:9443','wss://data-stream.binance.vision'][CX.tries%2]+'/stream?streams=btcusdt@ticker/ethusdt@ticker')}catch{CX.mode='poll';return cxPoll()}
+  CX.ws=ws;
+  ws.onmessage=e=>{got=true;CX.tries=0;try{const d=JSON.parse(e.data).data,id=d?.s==='BTCUSDT'?'btc':d?.s==='ETHUSDT'?'eth':null;if(id)setTile(id,{v:+d.c,ch:+d.P,more:cxMore(+d.l,+d.h,id==='btc'?0:2)})}catch{}};
+  ws.onerror=()=>{try{ws.close()}catch{}};
+  ws.onclose=()=>{if(CX.ws!==ws)return;CX.ws=null;if(document.hidden)return;CX.tries++;if(!got&&CX.tries>=2){CX.mode='poll';cxPoll()}else CX.timer=setTimeout(cxStart,Math.min(15000,1500*CX.tries))}}
+async function cxPoll(){clearTimeout(CX.timer);if(document.hidden)return;let ok=false;
+  try{const a=await firstOK(['https://api.binance.com','https://data-api.binance.vision'].map(h=>h+'/api/v3/ticker/24hr?symbols='+encodeURIComponent('["BTCUSDT","ETHUSDT"]')),6000);
+    for(const d of a){const id=d.symbol==='BTCUSDT'?'btc':'eth';setTile(id,{v:+d.lastPrice,ch:+d.priceChangePercent,more:cxMore(+d.lowPrice,+d.highPrice,id==='btc'?0:2)})}ok=true}catch{}
+  if(!ok)try{const g=await getJSON('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true',7000);
+    setTile('btc',{v:g.bitcoin.usd,ch:g.bitcoin.usd_24h_change,more:'Kaynak CoinGecko'});setTile('eth',{v:g.ethereum.usd,ch:g.ethereum.usd_24h_change,more:'Kaynak CoinGecko'});ok=true}catch{}
+  if(!ok)for(const id of['btc','eth'])if(T[id].v==null)T[id].more.textContent='Bağlantı kurulamadı';
+  CX.timer=setTimeout(cxPoll,ok?30000:120000)}
+async function loadSparks(){
+  const kl=(s,iv,n)=>firstOK(['https://api.binance.com','https://data-api.binance.vision'].map(h=>`${h}/api/v3/klines?symbol=${s}&interval=${iv}&limit=${n}`),7000);
+  kl('BTCUSDT','1h',24).then(a=>spark('btc',a.map(k=>+k[4]))).catch(()=>{});kl('ETHUSDT','1h',24).then(a=>spark('eth',a.map(k=>+k[4]))).catch(()=>{});
+  try{const from=new Date(Date.now()-36*864e5).toISOString().slice(0,10),f=await firstOK([`https://api.frankfurter.dev/v1/${from}..?base=EUR&symbols=TRY,USD`,`https://api.frankfurter.app/${from}..?from=EUR&to=TRY,USD`],7000);
+    const days=Object.keys(f.rates).sort(),et=days.map(d=>f.rates[d].TRY),eu=days.map(d=>f.rates[d].USD),ut=et.map((v,i)=>v/eu[i]);spark('eurtry',et);spark('eurusd',eu);spark('usdtry',ut);
+    try{const k=await kl('PAXGUSDT','1d',45),by=Object.fromEntries(k.map(x=>[new Date(x[0]).toISOString().slice(0,10),+x[4]]));spark('gram',days.map((d,i)=>by[d]?by[d]*ut[i]/31.1034768:null).filter(v=>v!=null))}catch{}}catch{}}
+
+// Seanslar
+function session(tz,open,close){const n=new Date(now()),p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:tz,weekday:'short',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(n).map(x=>[x.type,x.value]));
+  const wd=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].indexOf(p.weekday),m=+p.hour*60+ +p.minute+ +p.second/60,wk=wd<5;
+  if(wk&&m>=open&&m<close)return{open:true,mins:close-m,at:new Date(n.getTime()+(close-m)*6e4),pos:(m-open)/(close-open),m};
+  let days=0;if(!(wk&&m<open)){days=1;let w=(wd+1)%7;while(w>=5){days++;w=(w+1)%7}}const mins=days*1440+open-m;return{open:false,mins,at:new Date(n.getTime()+mins*6e4),m,wk}}
+const dur=m=>{m=Math.max(1,Math.round(m));const d=Math.floor(m/1440),h=Math.floor(m%1440/60),k=m%60;return d?`${d} gün ${h} sa`:h?`${h} sa ${k} dk`:`${k} dk`};
+const whenF=new Intl.DateTimeFormat('tr-TR',{weekday:'long',hour:'2-digit',minute:'2-digit'});
+const when=at=>new Date(now()).toDateString()===at.toDateString()?hmF.format(at):whenF.format(at).toLocaleLowerCase('tr');
+function sessions(){const b=session('Europe/Istanbul',600,1080),h=$('#mkh'),tr=$('#track');
+  if(b.open)h.textContent=`Borsa İstanbul açık, kapanışa ${dur(b.mins)} var.`;
+  else if(b.wk&&b.m>=580&&b.m<600)h.textContent='Borsa İstanbul açılış seansında.';
+  else if(b.wk&&b.m>=1080&&b.m<1090)h.textContent='Borsa İstanbul kapanış seansında.';
+  else h.textContent=`Borsa İstanbul kapalı, açılışa ${dur(b.mins)} var.`;
+  if(tr){tr.dataset.open=b.open;tr.style.setProperty('--p',(b.open?b.pos:0).toFixed(4));$('#trackMid').textContent=b.open?'Sürekli işlem':'Seans dışı'}
+  $('#sessions').innerHTML=[['Londra','Europe/London',480,990],['New York','America/New_York',570,960]].map(([n,tz,o,c])=>{const s=session(tz,o,c);
+    return `<span class="${s.open?'on':''}"><i></i><b>${n}</b> ${s.open?`açık, ${when(s.at)} kapanış`:`kapalı, ${when(s.at)} açılış`}</span>`}).join('')}
+
+// Küresel piyasa bandı (TradingView). Yüklenemezse bant hiç görünmez.
+function mountTape(){const box=$('#tape'),host=$('.tradingview-widget-container',box),s=document.createElement('script');
+  s.src='https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js';s.async=true;
+  s.textContent=JSON.stringify({symbols:[{proName:'FOREXCOM:SPXUSD',title:'S&P 500'},{proName:'FOREXCOM:NSXUSD',title:'Nasdaq 100'},{proName:'FOREXCOM:DJI',title:'Dow Jones'},{proName:'FOREXCOM:GRXEUR',title:'DAX'},
+    {proName:'OANDA:XAUUSD',title:'Ons altın'},{proName:'OANDA:XAGUSD',title:'Gümüş'},{proName:'OANDA:BCOUSD',title:'Brent'},{proName:'FX_IDC:USDTRY',title:'USD/TRY'},{proName:'FX_IDC:EURUSD',title:'EUR/USD'},{proName:'CAPITALCOM:DXY',title:'Dolar endeksi'}],
+    showSymbolLogo:false,isTransparent:true,displayMode:'regular',colorTheme:'dark',locale:'tr'});
+  s.onload=()=>{box.hidden=false};s.onerror=()=>{box.remove()};host.appendChild(s)}
+
+function status(){const v=[net.wx,net.fx],el=$('#status');let s='wait',t='Bağlanıyor';
+  if(v.every(x=>x===true)){s='live';t='Canlı veri'}else if(v.every(x=>x===false)){s='preview';t='Önizleme verisi'}else if(v.some(x=>x===false)){s='partial';t='Bazı kaynaklara ulaşılamıyor'}
+  el.dataset.s=s;$('#statusT').textContent=t;$('#notice').hidden=s!=='preview';
+  if(s==='preview'){if(!state.wx)renderWx(sampleWx());if(T.xu100.v==null)applyFx(SEED)}}
+
+/* ═══ Üç kâğıt ══════════════════════════════════════════ */
+function initPace(){const a=$('#sPace'),L=$('.rl',a),P=$('.rp',a),Rr=$('.rr',a),words=['Gözün','kelimeyi','beklemesin,','kelime','göze','gelsin.'];let i=3,tm=0;
+  const orp=w=>{const n=[...w.replace(/[^\p{L}]/gu,'')].length;return n<=1?0:n<=5?1:n<=9?2:3},show=w=>{const c=[...w],k=orp(w);L.textContent=c.slice(0,k).join('');P.textContent=c[k];Rr.textContent=c.slice(k+1).join('')};
+  show(words[3]);const play=()=>{if(reduce||tm)return;i=-1;tm=setInterval(()=>{i=(i+1)%words.length;show(words[i])},60000/320)},stop=()=>{clearInterval(tm);tm=0;show(words[3])};
+  a.addEventListener('pointerenter',play);a.addEventListener('pointerleave',stop);a.addEventListener('focus',play);a.addEventListener('blur',stop)}
+function buildCal(d){const y=d.getFullYear(),m=d.getMonth(),today=d.getDate(),first=(new Date(y,m,1).getDay()+6)%7,dim=new Date(y,m+1,0).getDate();
+  let h=['Pt','Sa','Ça','Pe','Cu','Ct','Pz'].map((x,i)=>`<span class="h${i>4?' w':''}">${x}</span>`).join('')+'<span></span>'.repeat(first);
+  for(let k=1;k<=dim;k++){const wd=(first+k-1)%7;h+=`<span class="${k===today?'t':wd>4?'w':''}">${k}</span>`}
+  $('#calG').innerHTML=h;$('#calD').textContent=today;$('#calM').textContent=d.toLocaleDateString('tr-TR',{month:'long'});$('#calW').textContent=d.toLocaleDateString('tr-TR',{weekday:'long'})}
+
+/* ═══ Arama ve komutlar ═════════════════════════════════ */
+const PROJECTS=[{name:'Pace',desc:'Hızlı okuma',alias:'fastread speed reader okuma rsvp schulte',url:'https://ozcan-py.github.io/fastread/'},
+  {name:'MeCal',desc:'Takvim ve planlama',alias:'calendar takvim ajanda rutin hedef',url:'https://ozcan-py.github.io/MeCal/'},
+  {name:'Güzel Yazı',desc:'El yazısı çalışma sayfaları',alias:'handwriting guzel yazi worksheet el yazisi',url:'https://ozcan-py.github.io/HandWriting/'}];
+const dlg=$('#cmd'),q=$('#q'),list=$('#list'),tr=s=>s.toLocaleLowerCase('tr');let items=[],active=0,geoHits=[],geoTimer=0;
+const go=u=>{location.assign(u)};
+function setCity(c){state.city=c;store.set('home.city',c);state.wx=null;$('#city').textContent=c.name;dlg.close();measure();paint(shown);loadWx()}
+function useGeo(){if(!navigator.geolocation){$('#cmdFoot').textContent='Bu tarayıcı konum paylaşımını desteklemiyor.';return}
+  navigator.geolocation.getCurrentPosition(p=>setCity({name:'Konumum',lat:+p.coords.latitude.toFixed(4),lon:+p.coords.longitude.toFixed(4)}),()=>{$('#cmdFoot').textContent='Konum alınamadı. Tarayıcının konum iznini kontrol et.'},{timeout:9000,maximumAge:6e5})}
+function compute(){const raw=q.value.trim(),Q=tr(raw),out=[];
+  PROJECTS.forEach((p,i)=>{if(!Q||tr(p.name+' '+p.desc+' '+p.alias).includes(Q))out.push({t:p.name,s:`${p.desc}, ${i+1} tuşu`,run:()=>go(p.url)})});
+  if(/^[^\s]+\.[a-z]{2,}(\/\S*)?$/i.test(raw))out.unshift({t:'Adrese git: '+raw,s:'',run:()=>go(/^https?:/i.test(raw)?raw:'https://'+raw)});
+  geoHits.forEach(g=>out.push({t:'Hava durumu: '+g.name,s:[g.admin1,g.country].filter(Boolean).join(', '),run:()=>setCity({name:g.name,lat:g.latitude,lon:g.longitude})}));
+  CITIES.forEach(c=>{if(!Q||tr('hava durumu '+c.name).includes(Q))out.push({t:'Hava durumu: '+c.name,s:'Şehri değiştir',run:()=>setCity(c)})});
+  if(!Q||tr('hava durumu konumumu kullan').includes(Q))out.push({t:'Hava durumu: konumumu kullan',s:'Tarayıcı izin ister',run:useGeo});
+  if(/^[a-z]{4,6}$/i.test(raw))out.push({t:'TradingView\'de aç: BIST:'+raw.toUpperCase(),s:'Hisse sayfası',run:()=>go('https://www.tradingview.com/symbols/BIST-'+raw.toUpperCase()+'/')});
+  if(raw)out.push({t:'Google\'da ara: '+raw,s:'',run:()=>go('https://www.google.com/search?q='+encodeURIComponent(raw))});
+  items=out;active=0;draw2()}
+function draw2(){list.innerHTML='';items.forEach((it,i)=>{const li=document.createElement('li');li.id='opt'+i;li.setAttribute('role','option');li.setAttribute('aria-selected',i===active);
+    const a=document.createElement('span'),b=document.createElement('small');a.textContent=it.t;b.textContent=it.s;li.append(a,b);li.addEventListener('click',()=>it.run());li.addEventListener('pointermove',()=>{if(active!==i){active=i;mark()}});list.append(li)});
+  q.setAttribute('aria-activedescendant',items.length?'opt'+active:'')}
+function mark(){$$('li',list).forEach((li,i)=>li.setAttribute('aria-selected',i===active));q.setAttribute('aria-activedescendant','opt'+active);list.children[active]?.scrollIntoView({block:'nearest'})}
+function openCmd(prefill=''){if(dlg.open)return;q.value=prefill;geoHits=[];compute();dlg.showModal();q.focus();q.setSelectionRange(q.value.length,q.value.length)}
+q.addEventListener('input',()=>{compute();clearTimeout(geoTimer);const m=q.value.trim().match(/^hava(?:\s+durumu)?\s+(.{2,})$/i);
+  if(!m){if(geoHits.length){geoHits=[];compute()}return}
+  geoTimer=setTimeout(async()=>{try{const g=await getJSON('https://geocoding-api.open-meteo.com/v1/search?count=4&language=tr&format=json&name='+encodeURIComponent(m[1]),6000);geoHits=g.results||[];compute()}catch{}},280)});
+q.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(items.length){active=(active+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;mark()}}else if(e.key==='Enter'){e.preventDefault();items[active]?.run()}});
+dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
+$('#find').addEventListener('click',()=>openCmd());$('#cityBtn').addEventListener('click',()=>openCmd('hava '));
+addEventListener('keydown',e=>{if(dlg.open)return;const typing=/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)||e.target.isContentEditable;
+  if((e.key==='k'||e.key==='K')&&(e.metaKey||e.ctrlKey)){e.preventDefault();return openCmd()}
+  if(typing||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='/'){e.preventDefault();openCmd()}else if('123'.includes(e.key)&&e.key.length===1)go(PROJECTS[+e.key-1].url)});
+
+/* ═══ Başlat ════════════════════════════════════════════ */
+buildSkyline();buildTiles();measure();sizeCanvas();initPace();hourPreview();
+{ // Açılışta şafaktan şimdiye hızlı bir zaman atlaması (yarım saatte en fazla bir kez)
+  const n=now(),last=store.get('home.intro',0);
+  if(reduce||Date.now()-last<30*6e4){shown=n;paint(n)}
+  else{store.set('home.intro',Date.now());const s=new Date(n);s.setHours(3,30,0,0);let from=s.getTime();if(n-from<3*36e5)from=n-8*36e5;shown=from;paint(from);tweenTo(n,2100)}
+}
+tick();sessions();
+new ResizeObserver(()=>{measure();sizeCanvas();if(!tweenId)paint(shown)}).observe(sky);
+Promise.allSettled([loadWx(),loadFx()]);cxStart();loadSparks();
+(window.requestIdleCallback||setTimeout)(mountTape,{timeout:2500});
+setInterval(()=>{if(!document.hidden)loadFx()},120*1000);setInterval(()=>{if(!document.hidden)loadWx()},15*60*1000);setInterval(()=>{if(!document.hidden)loadSparks()},20*60*1000);
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cxStop()}else{cxStart();kick();if(!state.previewing){shown=now();paint(shown)}}});
+addEventListener('pageshow',e=>{if(e.persisted){loadFx();loadWx();cxStart()}});
+})();
+</script>
+</body>
+</html>
